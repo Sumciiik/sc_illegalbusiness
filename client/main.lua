@@ -38,7 +38,10 @@ AddEventHandler('sc_illegalbusiness:listbus',function ()
         id = 'busdealerlist',
         title = 'Here is what I`ve got',
         options = {
-            
+            {
+                title = '',
+                event = ''
+            }
         }
     })
     lib.showContext('busdealerlist')
