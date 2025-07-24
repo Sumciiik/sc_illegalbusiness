@@ -19,6 +19,7 @@ dependency 'es_extended'
 client_scripts 
 {
     'client/*.lua',
+    'client/counterfeit/*.lua',
 }
 
 server_scripts

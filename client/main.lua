@@ -1,3 +1,6 @@
+local coordsIn = Config.CounterfeitFactory.CoordsIn
+
+
 RegisterNetEvent('sc_illegalbusiness:busdealermenu')
 AddEventHandler('sc_illegalbusiness:busdealermenu', function ()
     bconfirm = lib.alertDialog({
@@ -18,6 +21,8 @@ AddEventHandler('sc_illegalbusiness:busdealermenu', function ()
             options = {
                 {
                     title = 'List of businesses',
+                    description = '',
+                    icon = '',
                     event = 'sc_illegalbusiness:listbus'
                 }
             }
@@ -34,14 +39,51 @@ end)
 
 RegisterNetEvent('sc_illegalbusiness:listbus')
 AddEventHandler('sc_illegalbusiness:listbus',function ()
+    local alweed = Config.AllowedBusinesses.WeedFarm
+    local almeth = Config.AllowedBusinesses.MethLab
+    local alcocaine = Config.AllowedBusinesses.CocaineLab
+    local alcounterfeit = Config.AllowedBusinesses.CounterfeitFactory
+    
     lib.registerContext({
         id = 'busdealerlist',
         title = 'Here is what I`ve got',
         options = {
             {
-                title = '',
-                event = ''
-            }
+                title = '1',
+                description = '',
+                icon = 'cannabis',
+                event = 'sc_illegalbusiness:weedfarmmenu',
+                disabled = not alweed
+            },
+                        {
+                title = '2',
+                description = '',
+                icon = 'flask',
+                event = 'sc_illegalbusiness:methlabmenu',
+                disabled = not almeth
+            },
+                        {
+                title = '3',
+                description = '',
+                icon = 'leaf',
+                event = 'sc_illegalbusiness:cocainelabmenu',
+                disabled = not alcocaine
+            },
+            {
+                title = 'Counterfeiting',
+                description = 'Tired of goverment?',
+                icon = 'money-bill',
+                event = 'sc_illegalbusiness:counterfeitmenu',
+                disabled = not alcounterfeit
+            },
+            {
+                title = 'Test',
+                onSelect = function ()
+                        for i = 1, #coordsIn do 
+                        print(coordsIn[i])
+                        end
+                end
+            },
         }
     })
     lib.showContext('busdealerlist')
