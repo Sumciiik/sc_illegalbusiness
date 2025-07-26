@@ -8,8 +8,18 @@ end)
 
 ESX.RegisterServerCallback('sc_counterfeit:getCounterfeitDisabled', function(source, cb)
     local id = ESX.GetPlayerFromId(source)
-    local getCounterfeitDisabled = MySQL.scalar.await('SELECT businessid FROM sc_illegalbusiness WHERE id = ?', {
+    local purchasedIds = {}
+
+    local result = MySQL.query.await('SELECT businessid FROM sc_illegalbusiness WHERE id = ?', {
         id.identifier
     })
-    cb(getCounterfeitDisabled)
+
+    if result then
+        for _, row in ipairs(result) do
+            table.insert(purchasedIds, row.businessid)
+        end
+    end
+
+    cb(purchasedIds or {})
 end)
+

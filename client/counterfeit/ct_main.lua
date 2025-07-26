@@ -4,6 +4,7 @@ local title = Config.CounterfeitFactory.Title
 local value = Config.CounterfeitFactory.Value
 local image = Config.CounterfeitFactory.Image
 local description = Config.CounterfeitFactory.Description
+local idb = Config.CounterfeitFactory.Ids
 
 CreateThread(function()
     for i = 1, #coordsOut do
@@ -50,10 +51,14 @@ end)
 
 CreateThread(function ()
     ESX.TriggerServerCallback('sc_counterfeit:getCounterfeitDisabled',function(getCounterfeitDisabled)
-        if getCounterfeitDisabled ~= nil then 
-            owneddisable = false
-        else 
-            owneddisable = true
+        local idb = Config.CounterfeitFactory.Ids
+        for i = 1, #idb do 
+            if idb[i] == getCounterfeitDisabled then 
+                disabledid = true 
+            else if getCounterfeitDisabled == nil or getCounterfeitDisabled == 0 then 
+                disabledid = false
+            end
+            end
         end
     end)
 end)
@@ -62,13 +67,21 @@ end)
 
 RegisterNetEvent('sc_illegalbusiness:counterfeitmenu')
 AddEventHandler('sc_illegalbusiness:counterfeitmenu',function ()
+    
+    ESX.TriggerServerCallback('sc_counterfeit:getCounterfeitDisabled', function(purchasedIds)
 
-local options = {}
-ESX.TriggerServerCallback('sc_counterfeit:getCounterfeitDisabled',function(can)
-
-
+    local ids= idb
+    local options = {}
 
     for i = 1, #title do
+        local isDisabled = false
+
+        for _, purchasedId in ipairs(purchasedIds or {}) do
+            if tostring(ids[i]) == tostring(purchasedId) then
+                isDisabled = true
+            end
+        end
+
         table.insert(options, {
             title = title[i],
             image = image[i],
@@ -76,9 +89,10 @@ ESX.TriggerServerCallback('sc_counterfeit:getCounterfeitDisabled',function(can)
             metadata = {
                 value = value[i]
             },
-            disabled = not can,
-            onSelect = function ()
-                TriggerServerEvent('sc_illegalbusiness:counterfeitremovemoney',value[i])
+            disabled = isDisabled,
+            onSelect = function()
+                TriggerServerEvent('sc_illegalbusiness:counterfeitremovemoney', value[i])
+                TriggerServerEvent('sc_illegalbusiness:counterfeitbuy', ids[i])
             end
         })
     end
@@ -90,5 +104,5 @@ ESX.TriggerServerCallback('sc_counterfeit:getCounterfeitDisabled',function(can)
     })
 
     lib.showContext('sc_counterfeit:menu')
-end)
+    end)
 end)
